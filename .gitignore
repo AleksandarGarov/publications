@@ -7,3 +7,4 @@
 /src/publications-system/accounts/dev/.terraform.lock.hcl
 /src/publications-system/accounts/dev/terraform.tfstate
 /src/publications-system/accounts/dev/terraform.tfstate.backup
+/.jpb/
