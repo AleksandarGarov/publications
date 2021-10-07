@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #04AA6D;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/datetime/1.1.0/css/dataTables.dateTime.min.css"/>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+    <script src="js/dataTables.altEditor.free.js"></script>
+    <script class="init">
+        $(document).ready(function () {
+            $('#interestGroups').DataTable({
+                ajax: {
+                    url: "https://d23eug1wid614z.cloudfront.net/v1/interest-group/all",
+                    dataSrc: ""
+                },
+                dom: 'Bfrtip',
+                responsive: true,
+                autoWidth: true,
+                searching: true,
+                columns: [
+                    {
+                        "data": "id",
+                        "type": "readonly"
+                    },
+                    {"data": "title"},
+                    {
+                        "data": "lecturers",
+                        "type": "readonly"
+                    }
+                ],
+                select: 'single',
+                altEditor: true,     // Enable altEditor
+                buttons: [
+                    {
+                        text: 'Add',
+                        name: 'add'        // do not change name
+                    },
+                    {
+                        extend: 'selected', // Bind to Selected row
+                        text: 'Edit',
+                        name: 'edit'        // do not change name
+                    },
+                    {
+                        extend: 'selected', // Bind to Selected row
+                        text: 'Delete',
+                        name: 'delete'      // do not change name
+                    },
+                    {
+                        text: 'Refresh',
+                        name: 'refresh'      // do not change name
+                    }
+                ],
+                onAddRow: function (datatable, rowdata, success, error) {
+                    $.ajax({
+                        url: "https://d23eug1wid614z.cloudfront.net/v1/interest-group",
+                        type: 'PUT',
+                        contentType: 'application/json',
+                        data: rowdata,
+                        success: success,
+                        error: error
+                    });
+                },
+                onEditRow: function (datatable, rowdata, success, error) {
+                    $.ajax({
+                        url: "https://d23eug1wid614z.cloudfront.net/v1/interest-group",
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: rowdata,
+                        success: success,
+                        error: error
+                    });
+                },
+                onDeleteRow: function (datatable, rowdata, success, error) {
+                    $.ajax({
+                        url: "https://d23eug1wid614z.cloudfront.net/v1/interest-group",
+                        type: 'DELETE',
+                        contentType: 'application/json',
+                        data: rowdata,
+                        success: success,
+                        error: error
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<ul>
+    <li><a href="/">Publications</a></li>
+    <li><a href="/lecturers.html">Lecturers</a></li>
+    <li><a class="active" href="/interestGroups.html">Interest Groups</a></li>
+</ul>
+
+<table id="interestGroups" class="display" style="width:100%">
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>lecturers</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <th>id</th>
+        <th>title</th>
+        <th>lecturers</th>
+    </tr>
+    </tfoot>
+</table>
+
+</body>
+</html>

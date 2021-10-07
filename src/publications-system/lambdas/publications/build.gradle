@@ -1,0 +1,80 @@
+buildscript {
+    ext.kotlinVersion = "1.4.32"
+    ext.http4kVersion = "4.9.3.1"
+    ext.connectVersion = "2.15.0.0"
+    ext.hibernateVersion = "5.4.30.Final"
+    ext.mysqlConnectorVersion = "8.0.24"
+    ext.springDataVersion = "2.5.1"
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-noarg:${kotlinVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'kotlin'
+apply plugin: "kotlin-jpa"
+
+compileKotlin.kotlinOptions.jvmTarget = "1.8"
+compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+group 'org.alga'
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+
+    implementation platform("org.http4k:http4k-bom:${http4kVersion}")
+    implementation("org.http4k:http4k-aws")
+    implementation("org.http4k:http4k-core")
+    implementation("org.http4k:http4k-cloudnative")
+    implementation("org.http4k:http4k-client-apache")
+    implementation("org.http4k:http4k-format-jackson")
+    implementation("org.http4k:http4k-format-moshi")
+    implementation("org.http4k:http4k-serverless-lambda")
+
+    implementation("org.hibernate:hibernate-core:${hibernateVersion}")
+
+    implementation("mysql:mysql-connector-java:${mysqlConnectorVersion}")
+
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.withType(Test) {
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    useJUnitPlatform()
+}
+
+task zipLambdaDistribution(type: Zip) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+
+    from compileKotlin
+    from processResources
+    into("lib") {
+        from configurations.runtimeClasspath
+    }
+}
+
+task lambdaZip {
+    dependsOn(check, zipLambdaDistribution)
+}
+
+build.dependsOn(lambdaZip)

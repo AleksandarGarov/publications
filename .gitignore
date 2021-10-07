@@ -1,0 +1,9 @@
+/src/publications-system/.terraform.lock.hcl
+/src/publications-system/.terraform/
+/.idea/
+/src/publications-system/lambdas/publications/.gradle/
+/src/publications-system/lambdas/publications/build/
+/src/publications-system/accounts/dev/.terraform/
+/src/publications-system/accounts/dev/.terraform.lock.hcl
+/src/publications-system/accounts/dev/terraform.tfstate
+/src/publications-system/accounts/dev/terraform.tfstate.backup

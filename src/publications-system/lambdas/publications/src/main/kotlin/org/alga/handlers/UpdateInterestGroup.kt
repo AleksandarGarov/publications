@@ -1,0 +1,22 @@
+package org.alga.handlers
+
+import org.alga.daos.InterestGroupDao
+import org.alga.dtos.InterestGroupDto
+import org.http4k.core.*
+import org.http4k.core.Method.POST
+import org.http4k.core.Status.Companion.OK
+import org.http4k.filter.ServerFilters
+import org.http4k.format.Jackson.auto
+import org.http4k.routing.bind
+
+fun UpdateInterestGroup() =
+    "" bind POST to run {
+        val requestLens = Body.auto<InterestGroupDao>().toLens()
+        val responseLens = Body.auto<InterestGroupDao>().toLens()
+
+        ServerFilters.CatchLensFailure()
+            .then { req ->
+                val updateInterestGroup = requestLens(req)
+                Response(OK).with(responseLens of InterestGroupDto.update(updateInterestGroup))
+            }
+    }
